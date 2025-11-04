@@ -54,7 +54,7 @@ public class UsuarioService {
     
 
     public List<Usuario> obtenerUsuariosActivos() {
-        return usuarioRepository.findByActivo(true);
+        return usuarioRepository.findByActivo(1);
     }
     
 
@@ -111,7 +111,7 @@ public class UsuarioService {
             throw new RuntimeException("Credenciales inválidas");
         }
         
-        if (!usuario.getActivo()) {
+        if (usuario.getActivo() == null || usuario.getActivo() == 0) {
             throw new RuntimeException("Usuario inactivo");
         }
         
@@ -122,7 +122,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
         
-        usuario.setActivo(false);
+        usuario.setActivo(0);
         return usuarioRepository.save(usuario);
     }
     
@@ -130,7 +130,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
         
-        usuario.setActivo(true);
+        usuario.setActivo(1);
         return usuarioRepository.save(usuario);
     }
     

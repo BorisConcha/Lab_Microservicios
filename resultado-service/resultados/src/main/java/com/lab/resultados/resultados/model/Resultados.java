@@ -18,63 +18,63 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Resultados {
 
-        @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "ID")
     private Long id;
     
     @NotNull(message = "El ID del paciente es obligatorio")
-    @Column(name = "paciente_id", nullable = false)
+    @Column(name = "PACIENTE_ID", nullable = false)
     private Long pacienteId;
     
     @NotBlank(message = "El nombre del paciente es obligatorio")
-    @Column(name = "paciente_nombre", nullable = false, length = 200)
+    @Column(name = "PACIENTE_NOMBRE", nullable = false, length = 200)
     private String pacienteNombre;
     
     @NotNull(message = "El ID del médico es obligatorio")
-    @Column(name = "medico_id", nullable = false)
+    @Column(name = "MEDICO_ID", nullable = false)
     private Long medicoId;
     
     @NotBlank(message = "El nombre del médico es obligatorio")
-    @Column(name = "medico_nombre", nullable = false, length = 200)
+    @Column(name = "MEDICO_NOMBRE", nullable = false, length = 200)
     private String medicoNombre;
     
     @NotBlank(message = "El laboratorio es obligatorio")
-    @Column(nullable = false, length = 150)
+    @Column(name = "LABORATORIO", nullable = false, length = 150)
     private String laboratorio;
     
     @NotBlank(message = "El tipo de análisis es obligatorio")
     @Size(min = 3, max = 150, message = "El tipo de análisis debe tener entre 3 y 150 caracteres")
-    @Column(name = "tipo_analisis", nullable = false, length = 150)
+    @Column(name = "TIPO_ANALISIS", nullable = false, length = 150)
     private String tipoAnalisis;
     
     @NotBlank(message = "La descripción es obligatoria")
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(name = "DESCRIPCION", nullable = false, columnDefinition = "TEXT")
     private String descripcion;
     
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(name = "RESULTADO_DETALLE", nullable = false, columnDefinition = "TEXT")
     private String resultadoDetalle;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(name = "ESTADO", nullable = false, length = 20)
     private EstadoResultado estado;
     
     @NotNull(message = "La fecha de análisis es obligatoria")
-    @Column(name = "fecha_analisis", nullable = false)
+    @Column(name = "FECHA_ANALISIS", nullable = false)
     private LocalDate fechaAnalisis;
     
-    @Column(name = "fecha_entrega")
+    @Column(name = "FECHA_ENTREGA")
     private LocalDate fechaEntrega;
     
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "OBSERVACIONES", columnDefinition = "TEXT")
     private String observaciones;
     
-    @Column(name = "valores_referencia", columnDefinition = "TEXT")
+    @Column(name = "VALORES_REFERENCIA", columnDefinition = "TEXT")
     private String valoresReferencia;
     
-    @Column(name = "fecha_registro", nullable = false, updatable = false)
+    @Column(name = "FECHA_REGISTRO", nullable = false, updatable = false)
     private LocalDateTime fechaRegistro;
     
-    @Column(name = "fecha_actualizacion")
+    @Column(name = "FECHA_ACTUALIZACION")
     private LocalDateTime fechaActualizacion;
     
     @PrePersist

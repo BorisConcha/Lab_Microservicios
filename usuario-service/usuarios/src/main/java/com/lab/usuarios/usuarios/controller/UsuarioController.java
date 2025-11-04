@@ -35,9 +35,9 @@ public class UsuarioController {
     public ResponseEntity<List<Usuario>> obtenerTodosLosUsuarios() {
         try {
             List<Usuario> usuarios = usuarioService.obtenerTodosLosUsuarios();
-            return ResponseEntity.ok(usuarios); // 200 OK
+            return ResponseEntity.ok(usuarios);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     
@@ -45,8 +45,8 @@ public class UsuarioController {
     public ResponseEntity<?> obtenerUsuarioPorId(@PathVariable Long id) {
         try {
             return usuarioService.obtenerUsuarioPorId(id)
-                    .map(usuario -> ResponseEntity.ok(usuario)) // 200 OK
-                    .orElse(ResponseEntity.notFound().build()); // 404 Not Found
+                    .map(usuario -> ResponseEntity.ok(usuario))
+                    .orElse(ResponseEntity.notFound().build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(crearMensajeError(e.getMessage()));

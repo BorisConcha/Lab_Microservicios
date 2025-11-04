@@ -17,49 +17,49 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Usuario {
 
-        @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "ID")
     private Long id;
     
     @NotBlank(message = "El nombre es obligatorio")
     @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
-    @Column(nullable = false, length = 100)
+    @Column(name = "NOMBRE", nullable = false, length = 100)
     private String nombre;
     
     @NotBlank(message = "El apellido es obligatorio")
     @Size(min = 2, max = 100, message = "El apellido debe tener entre 2 y 100 caracteres")
-    @Column(nullable = false, length = 100)
+    @Column(name = "APELLIDO", nullable = false, length = 100)
     private String apellido;
     
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "El email debe ser valido")
-    @Column(nullable = false, unique = true, length = 150)
+    @Column(name = "EMAIL", nullable = false, unique = true, length = 150)
     private String email;
     
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
-    @Column(nullable = false)
+    @Column(name = "PASSWORD", nullable = false, length = 255)
     private String password;
     
     @NotBlank(message = "El RUT es obligatorio")
-    @Column(nullable = false, unique = true, length = 12)
+    @Column(name = "RUT", nullable = false, unique = true, length = 12)
     private String rut;
     
     @NotBlank(message = "El telefono es obligatorio")
-    @Column(nullable = false, length = 15)
+    @Column(name = "TELEFONO", nullable = false, length = 15)
     private String telefono;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(name = "ROL", nullable = false, length = 20)
     private RolUsuario rol;
     
-    @Column(nullable = false)
-    private Boolean activo = true;
+    @Column(name = "ACTIVO")
+    private Integer activo; 
     
-    @Column(name = "fecha_registro", nullable = false, updatable = false)
+    @Column(name = "FECHA_REGISTRO", nullable = false, updatable = false)
     private LocalDateTime fechaRegistro;
     
-    @Column(name = "fecha_actualizacion")
+    @Column(name = "FECHA_ACTUALIZACION")
     private LocalDateTime fechaActualizacion;
     
     @PrePersist
