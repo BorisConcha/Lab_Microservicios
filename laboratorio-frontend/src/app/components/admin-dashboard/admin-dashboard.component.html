@@ -1,1 +1,289 @@
-<p>admin-dashboard works!</p>
+<div class="container-fluid">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-flask me-2"></i>LabResults - Admin
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="fas fa-user-circle fa-lg"></i> {{ usuario.nombre }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" routerLink="/perfil"><i class="fas fa-user me-2"></i>Mi Perfil</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" (click)="cerrarSesion()"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="row">
+    <div class="col-lg-2 col-md-3 bg-light vh-100 d-none d-md-block">
+      <div class="list-group list-group-flush">
+        <a class="list-group-item list-group-item-action" 
+           [class.active]="vistaActual === 'dashboard'" 
+           (click)="cambiarVista('dashboard')">
+          <i class="fas fa-home me-2"></i>Dashboard
+        </a>
+        <a class="list-group-item list-group-item-action" 
+           [class.active]="vistaActual === 'laboratorios'" 
+           (click)="cambiarVista('laboratorios')">
+          <i class="fas fa-building me-2"></i>Laboratorios
+        </a>
+        <a class="list-group-item list-group-item-action" 
+           [class.active]="vistaActual === 'usuarios'" 
+           (click)="cambiarVista('usuarios')">
+          <i class="fas fa-users me-2"></i>Usuarios
+        </a>
+        <a class="list-group-item list-group-item-action" 
+           [class.active]="vistaActual === 'resultados'" 
+           (click)="cambiarVista('resultados')">
+          <i class="fas fa-file-medical me-2"></i>Resultados
+        </a>
+      </div>
+    </div>
+
+    <div class="col-lg-10 col-md-9 col-12">
+      <div *ngIf="vistaActual === 'dashboard'">
+        <h2 class="mb-4">Dashboard Administrativo</h2>
+        
+        <div class="row mb-4">
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-primary text-white">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="text-uppercase mb-0">Laboratorios</h6>
+                    <h2 class="mb-0">{{ laboratorios.length }}</h2>
+                  </div>
+                  <i class="fas fa-building fa-3x opacity-50"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-success text-white">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="text-uppercase mb-0">Usuarios</h6>
+                    <h2 class="mb-0">{{ contarUsuarios() }}</h2>
+                  </div>
+                  <i class="fas fa-users fa-3x opacity-50"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-info text-white">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="text-uppercase mb-0">Resultados</h6>
+                    <h2 class="mb-0">{{ resultados.length }}</h2>
+                  </div>
+                  <i class="fas fa-file-medical fa-3x opacity-50"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-warning text-white">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="text-uppercase mb-0">Pendientes</h6>
+                    <h2 class="mb-0">{{ contarPendientes() }}</h2>
+                  </div>
+                  <i class="fas fa-clock fa-3x opacity-50"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-8 mb-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="mb-0">Actividad Reciente</h5>
+              </div>
+              <div class="card-body">
+                <div class="list-group">
+                  <div class="list-group-item" *ngFor="let actividad of actividadReciente">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h6 class="mb-1">{{ actividad.titulo }}</h6>
+                      <small>{{ actividad.fecha | date:'short' }}</small>
+                    </div>
+                    <p class="mb-1">{{ actividad.descripcion }}</p>
+                    <small class="text-muted">{{ actividad.usuario }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-4 mb-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="mb-0">Laboratorios por Tipo</h5>
+              </div>
+              <div class="card-body">
+                <div class="mb-3" *ngFor="let tipo of obtenerTiposLaboratorios()">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>{{ tipo.nombre }}</span>
+                    <span class="badge bg-primary">{{ tipo.cantidad }}</span>
+                  </div>
+                  <div class="progress" style="height: 10px;">
+                    <div class="progress-bar" [style.width.%]="(tipo.cantidad / laboratorios.length) * 100"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="vistaActual === 'laboratorios'">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2>Gestión de Laboratorios</h2>
+          <button class="btn btn-primary" (click)="abrirModalLaboratorio(null)">
+            <i class="fas fa-plus me-2"></i>Nuevo Laboratorio
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Dirección</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let lab of laboratorios">
+                    <td>{{ lab.id }}</td>
+                    <td>{{ lab.nombre }}</td>
+                    <td><span class="badge bg-info">{{ lab.tipo }}</span></td>
+                    <td>{{ lab.direccion }}</td>
+                    <td>{{ lab.telefono }}</td>
+                    <td>
+                      <span class="badge" [class.bg-success]="lab.activo" [class.bg-danger]="!lab.activo">
+                        {{ lab.activo ? 'Activo' : 'Inactivo' }}
+                      </span>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-primary me-1" (click)="abrirModalLaboratorio(lab)">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger" (click)="eliminarLaboratorio(lab.id)">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="vistaActual === 'usuarios'">
+        <h2 class="mb-4">Gestión de Usuarios</h2>
+        <div class="card">
+          <div class="card-body">
+            <p class="text-muted">Lista de usuarios registrados en el sistema</p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="vistaActual === 'resultados'">
+        <h2 class="mb-4">Gestión de Resultados</h2>
+        <div class="card">
+          <div class="card-body">
+            <p class="text-muted">Resultados de análisis clínicos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalLaboratorio" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ laboratorioSeleccionado ? 'Editar' : 'Nuevo' }} Laboratorio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="laboratorioForm">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nombre *</label>
+              <input type="text" class="form-control" formControlName="nombre">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Tipo *</label>
+              <select class="form-select" formControlName="tipo">
+                <option value="">Seleccione...</option>
+                <option value="Hematología">Hematología</option>
+                <option value="Bioquímica">Bioquímica</option>
+                <option value="Microbiología">Microbiología</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Dirección *</label>
+            <input type="text" class="form-control" formControlName="direccion">
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Teléfono *</label>
+              <input type="tel" class="form-control" formControlName="telefono">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Email *</label>
+              <input type="email" class="form-control" formControlName="email">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Especialidades</label>
+            <textarea class="form-control" formControlName="especialidades" rows="2"></textarea>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Horario de Atención *</label>
+              <input type="text" class="form-control" formControlName="horarioAtencion" placeholder="Lun-Vie 8:00-18:00">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Capacidad Diaria *</label>
+              <input type="number" class="form-control" formControlName="capacidadDiaria">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarLaboratorio()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

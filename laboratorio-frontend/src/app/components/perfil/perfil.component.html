@@ -1,1 +1,192 @@
-<p>perfil works!</p>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10 col-12">
+      <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+          <div class="mb-3">
+            <div class="avatar-circle bg-primary text-white mx-auto mb-3" style="width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-user fa-3x"></i>
+            </div>
+          </div>
+          <h3 class="fw-bold mb-1">{{ usuario.nombre }}</h3>
+          <p class="text-muted mb-2">{{ usuario.email }}</p>
+          <span class="badge bg-primary">{{ usuario.rol }}</span>
+        </div>
+      </div>
+
+      <ul class="nav nav-tabs mb-4" id="perfilTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button">
+            <i class="fas fa-info-circle me-2"></i>Información Personal
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button">
+            <i class="fas fa-lock me-2"></i>Cambiar Contraseña
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="perfilTabContent">
+        <div class="tab-pane fade show active" id="info" role="tabpanel">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="card-title mb-4">Editar Información Personal</h5>
+              
+              <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Nombre *</label>
+                    <input type="text" class="form-control" formControlName="nombre"
+                           [class.is-invalid]="nombre?.invalid && (nombre?.dirty || nombre?.touched)">
+                    <div *ngIf="nombre?.invalid && (nombre?.dirty || nombre?.touched)" class="invalid-feedback">
+                      El nombre es requerido
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Apellido *</label>
+                    <input type="text" class="form-control" formControlName="apellido"
+                           [class.is-invalid]="apellido?.invalid && (apellido?.dirty || apellido?.touched)">
+                    <div *ngIf="apellido?.invalid && (apellido?.dirty || apellido?.touched)" class="invalid-feedback">
+                      El apellido es requerido
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Correo Electrónico *</label>
+                  <input type="email" class="form-control" formControlName="email"
+                         [class.is-invalid]="email?.invalid && (email?.dirty || email?.touched)">
+                  <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="invalid-feedback">
+                    <div *ngIf="email?.errors?.['required']">El correo es requerido</div>
+                    <div *ngIf="email?.errors?.['email']">Ingrese un correo válido</div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Teléfono</label>
+                    <input type="tel" class="form-control" formControlName="telefono"
+                           placeholder="+56912345678">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">RUT</label>
+                    <input type="text" class="form-control" formControlName="rut"
+                           placeholder="12.345.678-9">
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Dirección</label>
+                  <textarea class="form-control" formControlName="direccion" rows="2"></textarea>
+                </div>
+
+                <div *ngIf="mensajeExito" class="alert alert-success mb-3">
+                  <i class="fas fa-check-circle me-2"></i>{{ mensajeExito }}
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button type="button" class="btn btn-secondary" (click)="cancelar()">
+                    Cancelar
+                  </button>
+                  <button type="submit" class="btn btn-primary" [disabled]="perfilForm.invalid || guardando">
+                    <span *ngIf="!guardando">Guardar Cambios</span>
+                    <span *ngIf="guardando">
+                      <span class="spinner-border spinner-border-sm me-2"></span>
+                      Guardando...
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="password" role="tabpanel">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="card-title mb-4">Cambiar Contraseña</h5>
+              
+              <form [formGroup]="passwordForm" (ngSubmit)="cambiarPassword()">
+                <div class="mb-3">
+                  <label class="form-label">Contraseña Actual *</label>
+                  <input [type]="showCurrentPassword ? 'text' : 'password'" 
+                         class="form-control" 
+                         formControlName="currentPassword"
+                         [class.is-invalid]="currentPassword?.invalid && (currentPassword?.dirty || currentPassword?.touched)">
+                  <div *ngIf="currentPassword?.invalid && (currentPassword?.dirty || currentPassword?.touched)" class="invalid-feedback">
+                    La contraseña actual es requerida
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Nueva Contraseña *</label>
+                  <input [type]="showNewPassword ? 'text' : 'password'" 
+                         class="form-control" 
+                         formControlName="newPassword"
+                         [class.is-invalid]="newPassword?.invalid && (newPassword?.dirty || newPassword?.touched)">
+                  <div *ngIf="newPassword?.invalid && (newPassword?.dirty || newPassword?.touched)" class="invalid-feedback">
+                    <div *ngIf="newPassword?.errors?.['required']">La nueva contraseña es requerida</div>
+                    <div *ngIf="newPassword?.errors?.['minlength']">Mínimo 8 caracteres</div>
+                    <div *ngIf="newPassword?.errors?.['pattern']">Debe incluir mayúscula, minúscula, número y carácter especial</div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Confirmar Nueva Contraseña *</label>
+                  <input [type]="showNewPassword ? 'text' : 'password'" 
+                         class="form-control" 
+                         formControlName="confirmPassword"
+                         [class.is-invalid]="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched) ||
+                                             passwordForm.errors?.['passwordMismatch']">
+                  <div *ngIf="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched)" class="invalid-feedback">
+                    Confirme la nueva contraseña
+                  </div>
+                  <div *ngIf="passwordForm.errors?.['passwordMismatch'] && confirmPassword?.dirty" class="invalid-feedback d-block">
+                    Las contraseñas no coinciden
+                  </div>
+                </div>
+
+                <div class="form-check mb-4">
+                  <input class="form-check-input" type="checkbox" id="showPasswords" 
+                         [(ngModel)]="showNewPassword" [ngModelOptions]="{standalone: true}">
+                  <label class="form-check-label" for="showPasswords">
+                    Mostrar contraseñas
+                  </label>
+                </div>
+
+                <div *ngIf="mensajePasswordExito" class="alert alert-success mb-3">
+                  <i class="fas fa-check-circle me-2"></i>{{ mensajePasswordExito }}
+                </div>
+
+                <div *ngIf="errorPassword" class="alert alert-danger mb-3">
+                  <i class="fas fa-exclamation-circle me-2"></i>{{ errorPassword }}
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button type="button" class="btn btn-secondary" (click)="cancelarPassword()">
+                    Cancelar
+                  </button>
+                  <button type="submit" class="btn btn-primary" [disabled]="passwordForm.invalid || cambiandoPassword">
+                    <span *ngIf="!cambiandoPassword">Cambiar Contraseña</span>
+                    <span *ngIf="cambiandoPassword">
+                      <span class="spinner-border spinner-border-sm me-2"></span>
+                      Cambiando...
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-outline-secondary" (click)="volver()">
+          <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,181 @@
-<p>registro works!</p>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10 col-12">
+      <div class="card shadow-lg border-0">
+        <div class="card-body p-5">
+          <div class="text-center mb-4">
+            <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+            <h2 class="fw-bold">Crear Cuenta</h2>
+            <p class="text-muted">Completa el formulario para registrarte</p>
+          </div>
+          
+          <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="nombre" class="form-label">Nombre *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="nombre"
+                  formControlName="nombre"
+                  placeholder="Juan"
+                  [class.is-invalid]="nombre?.invalid && (nombre?.dirty || nombre?.touched)">
+                <div *ngIf="nombre?.invalid && (nombre?.dirty || nombre?.touched)" class="invalid-feedback">
+                  <div *ngIf="nombre?.errors?.['required']">El nombre es requerido</div>
+                  <div *ngIf="nombre?.errors?.['minlength']">Mínimo 2 caracteres</div>
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="apellido" class="form-label">Apellido *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="apellido"
+                  formControlName="apellido"
+                  placeholder="Pérez"
+                  [class.is-invalid]="apellido?.invalid && (apellido?.dirty || apellido?.touched)">
+                <div *ngIf="apellido?.invalid && (apellido?.dirty || apellido?.touched)" class="invalid-feedback">
+                  <div *ngIf="apellido?.errors?.['required']">El apellido es requerido</div>
+                  <div *ngIf="apellido?.errors?.['minlength']">Mínimo 2 caracteres</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="rut" class="form-label">RUT *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="rut"
+                  formControlName="rut"
+                  placeholder="12.345.678-9"
+                  [class.is-invalid]="rut?.invalid && (rut?.dirty || rut?.touched)">
+                <div *ngIf="rut?.invalid && (rut?.dirty || rut?.touched)" class="invalid-feedback">
+                  <div *ngIf="rut?.errors?.['required']">El RUT es requerido</div>
+                  <div *ngIf="rut?.errors?.['pattern']">Formato inválido (12.345.678-9)</div>
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="telefono" class="form-label">Teléfono *</label>
+                <input 
+                  type="tel" 
+                  class="form-control" 
+                  id="telefono"
+                  formControlName="telefono"
+                  placeholder="+56912345678"
+                  [class.is-invalid]="telefono?.invalid && (telefono?.dirty || telefono?.touched)">
+                <div *ngIf="telefono?.invalid && (telefono?.dirty || telefono?.touched)" class="invalid-feedback">
+                  <div *ngIf="telefono?.errors?.['required']">El teléfono es requerido</div>
+                  <div *ngIf="telefono?.errors?.['pattern']">Formato inválido (+56912345678)</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="email" class="form-label">Correo Electrónico *</label>
+              <input 
+                type="email" 
+                class="form-control" 
+                id="email"
+                formControlName="email"
+                placeholder="ejemplo@correo.com"
+                [class.is-invalid]="email?.invalid && (email?.dirty || email?.touched)">
+              <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="invalid-feedback">
+                <div *ngIf="email?.errors?.['required']">El correo es requerido</div>
+                <div *ngIf="email?.errors?.['email']">Ingrese un correo válido</div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña *</label>
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+                class="form-control" 
+                id="password"
+                formControlName="password"
+                placeholder="••••••••"
+                [class.is-invalid]="password?.invalid && (password?.dirty || password?.touched)">
+              <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="invalid-feedback">
+                <div *ngIf="password?.errors?.['required']">La contraseña es requerida</div>
+                <div *ngIf="password?.errors?.['minlength']">Mínimo 8 caracteres</div>
+                <div *ngIf="password?.errors?.['maxlength']">Máximo 20 caracteres</div>
+                <div *ngIf="password?.errors?.['pattern']">Debe incluir mayúscula, minúscula, número y carácter especial</div>
+              </div>
+              
+              <div class="mt-2" *ngIf="password?.value">
+                <small class="text-muted">Fortaleza de contraseña:</small>
+                <div class="progress" style="height: 5px;">
+                  <div 
+                    class="progress-bar" 
+                    [ngClass]="getPasswordStrengthClass()"
+                    [style.width.%]="getPasswordStrength()">
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirmar Contraseña *</label>
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+                class="form-control" 
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                placeholder="••••••••"
+                [class.is-invalid]="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched) || 
+                                    (confirmPassword?.value && registroForm.errors?.['passwordMismatch'])">
+              <div *ngIf="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched)" class="invalid-feedback">
+                <div *ngIf="confirmPassword?.errors?.['required']">Confirme la contraseña</div>
+              </div>
+              <div *ngIf="registroForm.errors?.['passwordMismatch'] && confirmPassword?.dirty" class="invalid-feedback d-block">
+                Las contraseñas no coinciden
+              </div>
+            </div>
+            
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="showPass" [(ngModel)]="showPassword" [ngModelOptions]="{standalone: true}">
+              <label class="form-check-label" for="showPass">
+                Mostrar contraseñas
+              </label>
+            </div>
+            
+            <div class="form-check mb-4">
+              <input class="form-check-input" type="checkbox" id="terms" formControlName="acceptTerms"
+                     [class.is-invalid]="acceptTerms?.invalid && (acceptTerms?.dirty || acceptTerms?.touched)">
+              <label class="form-check-label" for="terms">
+                Acepto los <a href="#" class="text-decoration-none">términos y condiciones</a> *
+              </label>
+              <div *ngIf="acceptTerms?.invalid && (acceptTerms?.dirty || acceptTerms?.touched)" class="invalid-feedback d-block">
+                Debe aceptar los términos y condiciones
+              </div>
+            </div>
+            
+            <div *ngIf="successMessage" class="alert alert-success" role="alert">
+              <i class="fas fa-check-circle"></i> {{ successMessage }}
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button 
+                type="submit" 
+                class="btn btn-primary btn-lg"
+                [disabled]="registroForm.invalid || loading">
+                <span *ngIf="!loading">Registrarse</span>
+                <span *ngIf="loading">
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Registrando...
+                </span>
+              </button>
+              
+              <a routerLink="/login" class="btn btn-outline-secondary btn-lg">
+                Volver al inicio de sesión
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
