@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # Microservicio de Usuarios
+  microservicio-usuarios:
+    build: 
+      context: ./microservicio-usuarios
+      dockerfile: Dockerfile
+    container_name: ms-usuarios
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@rc0dep960oda1si0_tp?TNS_ADMIN=C:/Wallet_BaseDatosDuoc
+      - SPRING_DATASOURCE_USERNAME=User_Spring
+      - SPRING_DATASOURCE_PASSWORD=Springboot123
+    networks:
+      - lab-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Microservicio de Laboratorios
+  microservicio-laboratorios:
+    build: 
+      context: ./microservicio-laboratorios
+      dockerfile: Dockerfile
+    container_name: ms-laboratorios
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@rc0dep960oda1si0_tp?TNS_ADMIN=C:/Wallet_BaseDatosDuoc
+      - SPRING_DATASOURCE_USERNAME=User_Spring
+      - SPRING_DATASOURCE_PASSWORD=Springboot123
+    networks:
+      - lab-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Microservicio de Resultados
+  microservicio-resultados:
+    build: 
+      context: ./microservicio-resultados
+      dockerfile: Dockerfile
+    container_name: ms-resultados
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@rc0dep960oda1si0_tp?TNS_ADMIN=C:/Wallet_BaseDatosDuoc
+      - SPRING_DATASOURCE_USERNAME=User_Spring
+      - SPRING_DATASOURCE_PASSWORD=Springboot123
+    networks:
+      - lab-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Angular
+  frontend-angular:
+    build: 
+      context: ./frontend-angular
+      dockerfile: Dockerfile
+    container_name: frontend-lab
+    ports:
+      - "80:80"
+    depends_on:
+      - microservicio-usuarios
+      - microservicio-laboratorios
+      - microservicio-resultados
+    networks:
+      - lab-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  lab-network:
+    driver: bridge
