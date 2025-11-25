@@ -12,6 +12,12 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
+# Crear directorio para el wallet
+RUN mkdir -p /app/wallet
+
+# Copiar el wallet al contenedor
+COPY ./Wallet_BaseDatosDuoc /app/wallet
+
 # Copiar el JAR compilado
 COPY --from=build /app/target/*.jar app.jar
 
