@@ -2,6 +2,9 @@ package com.laboratorio.laboratorio.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "laboratorios")
 public class Laboratorio {
     
     @Id
