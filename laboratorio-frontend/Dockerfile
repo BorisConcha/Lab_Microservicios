@@ -17,7 +17,7 @@ RUN npm run build -- --configuration production
 FROM nginx:1.25-alpine
 
 # Copiar archivos compilados al directorio de Nginx
-COPY --from=build /app/dist/lab-results-frontend /usr/share/nginx/html
+COPY --from=build /app/dist/laboratorio-frontend /usr/share/nginx/html
 
 # Copiar configuración personalizada de Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
